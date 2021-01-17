@@ -8,39 +8,8 @@ import rospy
 import tf
 from visualization_msgs.msg import MarkerArray, Marker
 
-class modelTf():
-    """
-    tf publisher for model
-    """
 
-    def __init__(self, node_name="obj_calib", object_name="my_object", base_link="panda_link0"):
-
-        self.object_name = object_name
-        self.base_link = base_link
-        
-        self.X_POS = 0.3
-        self.Y_POS = 0.3
-        self.Z_POS = 0
-
-        self.trans = [self.X_POS, self.Y_POS, self.Z_POS]
-        self.eulers = [0,0,0]
-
-        try:
-            rospy.init_node("object_positioner", anonymous=True)
-        except:
-            print("[WARN] Node already exists")
-
-        self.tfBroadcaster = tf.TransformBroadcaster()
-
-    def pub_tf(self, trans, eulers):
-        self.tfBroadcaster.sendTransform(trans,
-                                        tf.transformations.quaternion_from_euler(eulers[0], eulers[1], eulers[2], axes="rzyx"),
-                                        rospy.Time.now(),
-                                        self.object_name,
-                                        self.base_link)
-
-
-class markerDisplay():
+class meshDisplay():
     """ 
     Class with functions to draw and delete markers
     """
@@ -55,31 +24,34 @@ class markerDisplay():
         except:
             print("Node not initialized (already exists?).")
         
-        #rospy.sleep(rate)
-        self.publisher = rospy.Publisher("points_array", MarkerArray, queue_size = 10)
+        self.publisher = rospy.Publisher("obj_model_ref", MarkerArray, queue_size = 10)
         rospy.sleep(1)
 
-    def draw_markers(self, pose):
+    def draw_mesh(self, pose, rot=(0.0, 0.0, 0.0, 1.0), color=(0.5, 0.5, 0.5, 1.0), scale=0.01):
 
         self.marker_list = MarkerArray()
         self.marker = Marker()
 
         self.marker.header.frame_id = "/panda_link0"
         self.marker.type = self.marker.MESH_RESOURCE
-        self.marker.mesh_resource = "package://obj_calib/meshes/robot_link1.stl"
+        self.marker.mesh_resource = "package://obj_calib/meshes/ipad7.stl"
         self.marker.action = self.marker.ADD
 
-        self.marker.color.r = 0
-        self.marker.color.g = 0
-        self.marker.color.b = 255
-        self.marker.color.a = 255
+        self.marker.color.r = color[0]
+        self.marker.color.g = color[1]
+        self.marker.color.b = color[2]
+        self.marker.color.a = color[3]
 
-        self.marker.scale.x = 1.0
-        self.marker.scale.y = 1.0
-        self.marker.scale.z = 1.0
+        self.marker.scale.x = scale
+        self.marker.scale.y = scale
+        self.marker.scale.z = scale
 
-        self.marker.pose.orientation.w = 1.0
-        self.marker.pose.position.x = pose[0]
+        self.marker.pose.orientation.w = rot[3]
+        self.marker.pose.orientation.x = rot[0]
+        self.marker.pose.orientation.y = rot[1]
+        self.marker.pose.orientation.z = rot[2]
+
+        self.marker.pose.position.x = pose[0]+2*0.08705
         self.marker.pose.position.y = pose[1]
         self.marker.pose.position.z = pose[2]
 
@@ -102,8 +74,8 @@ if __name__ == "__main__":
             mTf.pub_tf(mTf.trans, mTf.eulers)
             rospy.sleep(2)
     else:
-        md = markerDisplay()
+        md = meshDisplay()
 
         while rospy.is_shutdown() == False:
-            md.draw_markers([0,0,0])
+            md.draw_mesh(pose = [0.5,0.5,0])
             rospy.sleep(2)

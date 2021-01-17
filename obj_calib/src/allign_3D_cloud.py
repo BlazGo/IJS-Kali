@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.spatial.transform import Rotation as Rot
+import math
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -89,6 +89,30 @@ def get_Err(ref_points, alligned_points):
     # Euclidean distance
     return np.sqrt(np.abs(np.sum((ref_points - alligned_points)**2, axis = 1)))
 
+def isRotationMatrix(R) :
+    Rt = np.transpose(R)
+    shouldBeIdentity = np.dot(Rt, R)
+    I = np.identity(3, dtype = R.dtype)
+    n = np.linalg.norm(I - shouldBeIdentity)
+    return n < 1e-6
+
+def rot2eul(R) :
+    assert(isRotationMatrix(R))     
+    sy = math.sqrt(R[0,0] * R[0,0] +  R[1,0] * R[1,0])    
+    singular = sy < 1e-6
+ 
+    if  not singular :
+        x = math.atan2(R[2,1] , R[2,2])
+        y = math.atan2(-R[2,0], sy)
+        z = math.atan2(R[1,0], R[0,0])
+    else :
+        x = math.atan2(-R[1,2], R[1,1])
+        y = math.atan2(-R[2,0], sy)
+        z = 0
+    return np.array([x, y, z])
+
+
+
 if __name__ == "__main__":
 
     points_ref =   [[0.1, 0.0, 0.1],
@@ -102,8 +126,9 @@ if __name__ == "__main__":
     data1 = np.array(points_ref)                                                # ref points
     data2 = np.array(points_to_allign)                                          # to allign points
     R, trans = SVD(data1, data2)
-    Rot_matrix = Rot.from_matrix(R)
-    Eul = Rot_matrix.as_euler('zyx', degrees=True)
+    print(R)
+    #Rot_matrix = Rot.from_matrix(R)
+    Eul = rot2eul(R)
 
     print("Rotational matrix:\n{}\n\nEuler angles (zyx):\n{}\n\nTranslation vector:\n{}\n".format(np.around(R, 3), np.around(Eul, 2), np.around(trans, 2)))
 
@@ -127,3 +152,16 @@ if __name__ == "__main__":
     plt.show()
 
     print("Done")
+
+"""
+x: 0.380300526741 y: -0.0509588477927 z: 0.590257668649
+x: 0.509649026218 y: -0.180262205769 z: 0.590266107385
+x: 0.603921164664 y: -0.0860162912744 z: 0.59025727482
+x: 0.484784954886 y: 0.0331148741351 z: 0.590366715816
+
+[-0.40936392,  0.19633062, -0.58378694]
+
+[[ 6.86660253e-01,  7.26978467e-01, -7.35003635e-05],
+[-7.26978409e-01,  6.86660151e-01, -4.80070011e-04],
+[-2.98530790e-04,  3.83078173e-04,  9.99999882e-01]]))
+"""

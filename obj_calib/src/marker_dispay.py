@@ -2,14 +2,14 @@ import roslib
 import rospy
 from visualization_msgs.msg import MarkerArray, Marker
 
-print("\n[INFO] Starting marker display\n")
+print("\n[INFO] Starting marker display")
 
 class markerDisplay():
     """ 
     Class with functions to draw and delete markers
     """
 
-    def __init__(self, color=(255, 0, 255, 255)):
+    def __init__(self, topic_name = "points_array", color=(255, 0, 255, 255)):
         self.color = color
         rate = rospy.Rate(1)
 
@@ -19,7 +19,7 @@ class markerDisplay():
         except:
             print("Node not initialized (already exists?).")
             
-        self.publisher = rospy.Publisher("points_array", MarkerArray, queue_size = 10)
+        self.publisher = rospy.Publisher(topic_name, MarkerArray, queue_size = 10)
 
     def draw_markers(self, position_list):
         """

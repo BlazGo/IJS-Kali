@@ -4,9 +4,13 @@ from ttk import Progressbar
 from datetime import datetime
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+from tf.transformations import quaternion_from_euler as eul2qaut
 
 from pose_tracking import poseTrack
 from marker_dispay import markerDisplay
+from object_positioner import meshDisplay
+from allign_3D_cloud import SVD, rot2eul
 
 print("\n[INFO] Starting GUI\n")
 
@@ -20,16 +24,32 @@ class UI():
     def __init__(self, points_on_model = []):
         
         # Initialize ROS components
-        self.poseTrack = poseTrack() # point capture
-        self.markerDisplay = markerDisplay() # marker display
-        self.markerDisplay_model = markerDisplay()
+        self.ref_model_trans = [-0.5, 0.5, 0]
+
+        self.poseTrack = poseTrack()                # point capture
+        self.markerDisplay = markerDisplay(topic_name="points_array")        # marker display
+        self.markerDisplay_model = markerDisplay(topic_name="model_points")  # marker model display
+        self.meshDisplay = meshDisplay()            # Model display
+        self.meshDisplay.draw_mesh(pose = self.ref_model_trans)     
 
         self.root = tk.Tk()
         self.root.geometry("690x420")
         self.root.title("Object calibration")
 
-        self.points_on_model = points_on_model
+        point_list = []
+        for point in points_on_model:
+            temp_point = []
+            for i in range(len(point)):
+                temp = point[i] + self.ref_model_trans[i]
+                temp_point.append(temp)
+            point_list.append(temp_point)
+
+        self.points_on_model_og = points_on_model
+        self.points_on_model = point_list
         self.progress = 0
+
+        model_point = [self.points_on_model[0]]
+        self.markerDisplay_model.draw_markers(model_point)
 
         lb_cpos_txt = tk.Label(self.root, text = "Current position [m]")
         lb_progress = tk.Label(self.root, text = "Progress (points)")
@@ -66,11 +86,18 @@ class UI():
         self.update_cpos()
         self.update_time()
         self.update_progress()
+        #self.update_mesh()
         self.root.mainloop()
 
     def frec_point(self):
+        if len(self.poseTrack.points) >= len(self.points_on_model):
+            print("[INFO] No more points needed")
+            self.markerDisplay_model.delete_markers()        
+            return
+
         trans = self.poseTrack.record_pose()
         # Recorded points
+        self.markerDisplay.delete_markers()
         self.markerDisplay.draw_markers(self.poseTrack.points)
 
         self.update_progress()
@@ -81,8 +108,11 @@ class UI():
         # Calculate at which point we are (num model points - (num model points - num rec points))
         # at beginning = 0
         index = len(self.points_on_model) - (len(self.points_on_model) - len(self.poseTrack.points))
-        model_point = self.points_on_model[index]
-        self.markerDisplay_model.draw_markers(model_point)
+        try:
+            model_point = [self.points_on_model[index]]
+            self.markerDisplay_model.draw_markers(model_point)
+        except IndexError:
+            pass
 
         # Write in the console
         self.txt.insert(tk.INSERT, "[INFO] Point recorded.\n")
@@ -107,10 +137,21 @@ class UI():
         ax.set_zlabel('z')
         plt.show()
         
-        self.txt.insert(tk.INSERT, "[INFO] Graph.\n")
         print("[INFO] Calibrate.")
 
     def fcalibrate(self):
+        points_ref = np.array(self.points_on_model_og)
+        points_allign = np.array(self.poseTrack.points)
+
+                                        # to allign points
+        R, trans = SVD(points_ref, points_allign)
+        Eul = rot2eul(R)
+        quat = eul2qaut(Eul[2], Eul[1], Eul[0])
+
+        print(trans,R)
+        self.meshDisplay = meshDisplay()            # Model display
+        self.meshDisplay.draw_mesh(pose = trans, rot = quat)  
+
         self.txt.insert(tk.INSERT, "[INFO] Calibrate.\n")
         print("[INFO] Calibrate.")
 
@@ -124,6 +165,10 @@ class UI():
 
         self.txt.delete(1.0,tk.END)
         self.txt.insert(tk.INSERT, "[INFO] Reset points.\n")
+        self.update_progress()
+        
+        model_point = [self.points_on_model[0]]
+        self.markerDisplay_model.draw_markers(model_point)
         print("[INFO] Reset points.")
 
     def fcancel(self):
@@ -145,8 +190,11 @@ class UI():
         self.progress = (float(len(self.poseTrack.points)) / float(len(self.points_on_model)))*100
         self.progressbar["value"] = self.progress
 
+    def update_mesh(self):
+        self.meshDisplay.draw_mesh(pose=[-0.5, 0.5, 0])
+        self.root.after(5000, self.update_mesh)
 
 if __name__ == "__main__":
-    points_on_model = [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]] # test for progressbar need length
+    points_on_model = [[0, 0, 0.0065], [0.1706, 0, 0.0065], [0.1706, 0.2506, 0.0065], [0, 0.2506, 0.0065]] # test for progressbar need length
     main = UI(points_on_model = points_on_model)
     main.mainloop()
