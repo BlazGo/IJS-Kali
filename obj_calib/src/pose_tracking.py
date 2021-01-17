@@ -6,7 +6,7 @@ import tf
 import tty
 import termios
 
-print("\n[INFO] Starting pose tracking\n")
+print("[INFO] Starting pose tracking")
 
 class poseTrack():
     """

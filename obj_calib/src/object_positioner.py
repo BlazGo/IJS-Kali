@@ -7,6 +7,7 @@ import roslib
 import rospy
 import tf
 from visualization_msgs.msg import MarkerArray, Marker
+print("[INFO] Starting object positioner")
 
 
 class meshDisplay():
@@ -51,9 +52,9 @@ class meshDisplay():
         self.marker.pose.orientation.y = rot[1]
         self.marker.pose.orientation.z = rot[2]
 
-        self.marker.pose.position.x = pose[0]+2*0.08705
-        self.marker.pose.position.y = pose[1]
-        self.marker.pose.position.z = pose[2]
+        self.marker.pose.position.x = -pose[0]+2*0.08705
+        self.marker.pose.position.y = -pose[1]
+        self.marker.pose.position.z = -pose[2]
 
         self.marker_list.markers.append(self.marker)
         self.publisher.publish(self.marker_list)

@@ -1,18 +1,19 @@
+import datetime
+import numpy as np
 import Tkinter as tk
 from Tkinter import Scrollbar
 from ttk import Progressbar 
-from datetime import datetime
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
 from tf.transformations import quaternion_from_euler as eul2qaut
+
+print("[INFO] {} Starting GUI".format(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
 
 from pose_tracking import poseTrack
 from marker_dispay import markerDisplay
 from object_positioner import meshDisplay
 from allign_3D_cloud import SVD, rot2eul
 
-print("\n[INFO] Starting GUI\n")
 
 class UI():
     
@@ -140,15 +141,31 @@ class UI():
         print("[INFO] Calibrate.")
 
     def fcalibrate(self):
-        points_ref = np.array(self.points_on_model_og)
-        points_allign = np.array(self.poseTrack.points)
+        #points_ref = np.array(self.points_on_model_og)
+        #points_allign = np.array(self.poseTrack.points)
+        points_allign =   [[0.380300526741, -0.0509588477927, 0.590257668649],
+                        [0.509649026218, -0.180262205769, 0.590266107385],
+                        [0.603921164664, -0.0860162912744, 0.59025727482],
+                        [0.484784954886, 0.0331148741351, 0.590366715816]]
 
+        points_ref = [[0, 0, 0.0065],
+                    [0.1706, 0, 0.0065],
+                    [0.1706, 0.2506, 0.0065], 
+                    [0, 0.2506, 0.0065]]
                                         # to allign points
         R, trans = SVD(points_ref, points_allign)
         Eul = rot2eul(R)
-        quat = eul2qaut(Eul[2], Eul[1], Eul[0])
+        quat = eul2qaut(Eul[0], Eul[1], Eul[2])
+        
+        deg = []
+        for angle in Eul:
+            deg.append(round(angle*(180/np.pi), 2))
+        trans_t = []
+        for pos in trans:
+            trans_t.append(round(pos, 2))
 
-        print(trans,R)
+        print("Translation: {}\nRotations (zyx):{}".format(trans_t, deg))
+
         self.meshDisplay = meshDisplay()            # Model display
         self.meshDisplay.draw_mesh(pose = trans, rot = quat)  
 
@@ -182,9 +199,9 @@ class UI():
         self.root.after(100, self.update_cpos)
 
     def update_time(self):
-        now = datetime.now()
+        now = datetime.datetime.now()
         self.lb_time.config(text = str(now.strftime("%d/%m/%Y %H:%M:%S")))
-        self.root.after(100, self.update_time)
+        self.root.after(200, self.update_time)
 
     def update_progress(self):
         self.progress = (float(len(self.poseTrack.points)) / float(len(self.points_on_model)))*100

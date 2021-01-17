@@ -2,7 +2,7 @@ import roslib
 import rospy
 from visualization_msgs.msg import MarkerArray, Marker
 
-print("\n[INFO] Starting marker display")
+print("[INFO] Starting marker display")
 
 class markerDisplay():
     """ 
