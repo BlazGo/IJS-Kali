@@ -4,12 +4,6 @@
 School project to capture the pose of an object in robot workspace using kinesthetic guidance executed with ROS.
 
 Basic step goals
-Installation of ROS (and dualboot Ubuntu 18.04)
-Simulation Franka Emika
-Rviz visualization
-Data capture
-Calculating the pose of the object
-On robot test
 
 ### 1. Installation of ROS (and dualboot Ubuntu 18.04)
 For this project we will be using ROS Melodic together with Ubuntu 18.04 installed in dual boot on a windows machine.
@@ -31,8 +25,14 @@ Adapting the project to work on a real robot. Changing the topics...
 
 
 ### To run:
-in terminal run the Panda tutorial with:
+in terminal run the Panda tutorial (visualization in RVIZ) with:
 `roslaunch panda_moveit_config demo.launch  rviz_tutorial:=true`
 
 then launch the python script:
 `GUI.py`
+
+Multiple scripts with dedicated tasks:
+- GUI.py written user interface, and connecting all the code together
+- marker_diplay.py used for displaying the guide markers (e.g. spheres) as well as the captured points
+- object_positioner used for displaying mesh file of object on which the guide markers are attached so the user knows the goal to guide the robot. Second use is after calibration it publishes the updated position (where it really is in respect to the robot base).
+- allign_3D_points.py used as a script for point manipulation/allignment functions
