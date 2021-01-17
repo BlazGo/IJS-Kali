@@ -147,6 +147,6 @@ class UI():
 
 
 if __name__ == "__main__":
-    points_on_model = [0, 0, 0, 0, 0, 0, 0] # test for progressbar need length
+    points_on_model = [[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]] # test for progressbar need length
     main = UI(points_on_model = points_on_model)
     main.mainloop()

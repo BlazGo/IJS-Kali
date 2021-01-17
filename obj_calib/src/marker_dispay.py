@@ -46,7 +46,7 @@ class markerDisplay():
                 self.marker.scale.y = 0.05
                 self.marker.scale.z = 0.05
 
-                self.marker.color.r = self.color
+                self.marker.color.r = 0
                 self.marker.color.g = 0
                 self.marker.color.b = 255
                 self.marker.color.a = 255

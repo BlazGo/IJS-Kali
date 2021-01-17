@@ -32,14 +32,17 @@ def get_points(mesh_path, point_num=4):
                 x_max_value = x
                 x_max_if = f
                 x_max_iv = v
-            if y > y_max_value:
+                
+            elif y > y_max_value:
                 y_max_value = x
                 y_max_if = f
                 y_max_iv = v
-            if z > z_max_value:
+                
+            elif z > z_max_value:
                 z_max_value = x
                 z_max_if = f
                 z_max_iv = v
+                
  
             v += 1   
         f += 1
@@ -47,5 +50,5 @@ def get_points(mesh_path, point_num=4):
     print(y_max_value, y_max_if, y_max_iv)
     print(z_max_value, z_max_if, z_max_iv)
 
-path = "/home/blaz/catkin_ws_test/src/model_test/meshes/robot_link1.stl"
+path = "/home/blaz/catkin_ws/src/obj_calib/meshes/robot_link1.stl"
 get_points(mesh_path = path)
