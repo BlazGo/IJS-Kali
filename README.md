@@ -36,3 +36,4 @@ Multiple scripts with dedicated tasks:
 - marker_diplay.py used for displaying the guide markers (e.g. spheres) as well as the captured points
 - object_positioner.py used for displaying mesh file of object on which the guide markers are attached so the user knows the goal to guide the robot. Second use is after calibration it publishes the updated position (where it really is in respect to the robot base).
 - allign_3D_points.py used as a script for point manipulation/allignment functions
+- model_points.py script with functions to select the points on the model to capture (TODO: not implemented yet) 
