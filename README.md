@@ -34,5 +34,5 @@ then launch the python script:
 Multiple scripts with dedicated tasks:
 - GUI.py written user interface, and connecting all the code together
 - marker_diplay.py used for displaying the guide markers (e.g. spheres) as well as the captured points
-- object_positioner used for displaying mesh file of object on which the guide markers are attached so the user knows the goal to guide the robot. Second use is after calibration it publishes the updated position (where it really is in respect to the robot base).
+- object_positioner.py used for displaying mesh file of object on which the guide markers are attached so the user knows the goal to guide the robot. Second use is after calibration it publishes the updated position (where it really is in respect to the robot base).
 - allign_3D_points.py used as a script for point manipulation/allignment functions
