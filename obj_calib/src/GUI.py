@@ -22,15 +22,15 @@ class UI():
     - button functions added as functions
     """
 
-    def __init__(self, points_on_model = []):
+    def __init__(self, points_on_model = [], node_name="obj_calib"):
         
         # Initialize ROS components
         self.ref_model_trans = [-0.5, 0.5, 0]
 
-        self.poseTrack = poseTrack()                # point capture
-        self.markerDisplay = markerDisplay(topic_name="points_array")        # marker display
-        self.markerDisplay_model = markerDisplay(topic_name="model_points")  # marker model display
-        self.meshDisplay = meshDisplay()            # Model display
+        self.poseTrack = poseTrack(node_name=node_name)                # point capture
+        self.markerDisplay = markerDisplay(node_name=node_name, topic_name="points_array")        # marker display
+        self.markerDisplay_model = markerDisplay(node_name=node_name, topic_name="model_points")  # marker model display
+        self.meshDisplay = meshDisplay(node_name=node_name)            # Model display
         self.meshDisplay.draw_mesh(pose = self.ref_model_trans)     
 
         self.root = tk.Tk()
@@ -141,18 +141,20 @@ class UI():
         print("[INFO] Calibrate.")
 
     def fcalibrate(self):
-        #points_ref = np.array(self.points_on_model_og)
+        points_ref = np.array(self.points_on_model_og)
         #points_allign = np.array(self.poseTrack.points)
         points_allign =   [[0.380300526741, -0.0509588477927, 0.590257668649],
                         [0.509649026218, -0.180262205769, 0.590266107385],
                         [0.603921164664, -0.0860162912744, 0.59025727482],
                         [0.484784954886, 0.0331148741351, 0.590366715816]]
-
+        """
         points_ref = [[0, 0, 0.0065],
                     [0.1706, 0, 0.0065],
                     [0.1706, 0.2506, 0.0065], 
                     [0, 0.2506, 0.0065]]
                                         # to allign points
+        
+        """
         R, trans = SVD(points_ref, points_allign)
         Eul = rot2eul(R)
         quat = eul2qaut(Eul[0], Eul[1], Eul[2])
@@ -212,6 +214,13 @@ class UI():
         self.root.after(5000, self.update_mesh)
 
 if __name__ == "__main__":
+    from model_points import get_points
+    
     points_on_model = [[0, 0, 0.0065], [0.1706, 0, 0.0065], [0.1706, 0.2506, 0.0065], [0, 0.2506, 0.0065]] # test for progressbar need length
+
+    path = "/home/blaz/catkin_ws/src/obj_calib/meshes/ipad6.stl"
+    points_on_model = get_points(path)
+    print(points_on_model)
+
     main = UI(points_on_model = points_on_model)
     main.mainloop()

@@ -13,7 +13,7 @@ class poseTrack():
     Class with ros node to read the position of robot end effector
     """
 
-    def __init__(self):
+    def __init__(self, node_name="obj_calib"):
         """
         Input:
             - topic on which the base tf is broadcasted
@@ -29,7 +29,7 @@ class poseTrack():
         
         # Defifning ros node
         try:
-            rospy.init_node("pose_track", anonymous = True)
+            rospy.init_node(node_name, anonymous = True)
         except:
             print("Node not initialized (already exists?).")
             pass

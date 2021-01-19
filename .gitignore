@@ -1,1 +1,12 @@
 obj_calib/urdf/my_object.urdf
+obj_calib/backup/marker_dispay.py
+obj_calib/backup/GUI.py
+obj_calib/backup/model_points.py
+obj_calib/backup/object_positioner.py
+obj_calib/backup/pose_tracking.py
+obj_calib/src/pose_tracking.pyc
+obj_calib/src/marker_dispay.pyc
+obj_calib/backup/allign_3D_cloud.py
+obj_calib/src/allign_3D_cloud.pyc
+obj_calib/src/object_positioner.pyc
+obj_calib/src/model_points.pyc

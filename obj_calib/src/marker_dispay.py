@@ -9,13 +9,13 @@ class markerDisplay():
     Class with functions to draw and delete markers
     """
 
-    def __init__(self, topic_name = "points_array", color=(255, 0, 255, 255)):
+    def __init__(self, node_name="obj_calib", topic_name = "points_array", color=(255, 0, 255, 255)):
         self.color = color
         rate = rospy.Rate(1)
 
         # Define ROS node
         try:
-            rospy.init_node("pose_track", anonymous = True)
+            rospy.init_node(node_name, anonymous = True)
         except:
             print("Node not initialized (already exists?).")
             

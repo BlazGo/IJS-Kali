@@ -15,13 +15,13 @@ class meshDisplay():
     Class with functions to draw and delete markers
     """
 
-    def __init__(self, color=(255, 0, 255, 255)):
+    def __init__(self, node_name="obj_calib", color=(255, 0, 255, 255)):
         self.color = color
         #rate = rospy.Rate(1)
 
         # Define ROS node
         try:
-            rospy.init_node("pose_track", anonymous = True)
+            rospy.init_node(node_name, anonymous = True)
         except:
             print("Node not initialized (already exists?).")
         
@@ -35,7 +35,7 @@ class meshDisplay():
 
         self.marker.header.frame_id = "/panda_link0"
         self.marker.type = self.marker.MESH_RESOURCE
-        self.marker.mesh_resource = "package://obj_calib/meshes/ipad7.stl"
+        self.marker.mesh_resource = "package://obj_calib/meshes/ipad6.stl"
         self.marker.action = self.marker.ADD
 
         self.marker.color.r = color[0]

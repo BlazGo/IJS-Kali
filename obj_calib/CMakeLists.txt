@@ -65,6 +65,8 @@ find_package(catkin REQUIRED)
 
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
+import moveit_commander
+import moveit_msgs.msg
 #   DEPENDENCIES
 #   std_msgs  # Or other packages containing msgs
 # )

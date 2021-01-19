@@ -47,17 +47,18 @@ def get_points(mesh_path, point_num=4):
     indexes, temp = np.where(dist == np.max(dist))
 
     for vertex in indexes:
-        print(nv[vertex,:], vertex)
-
-
-    #print(np.where(nv[:,0] == maxi[0]))
-    #print(np.where(nv[:,1] == maxi[1]))
-    #print(np.where(nv[:,2] == maxi[2]))
-
+        #print(nv[vertex,:], vertex)
+        pass
+    """
+    print(np.where(nv[:,0] == maxi[0]))
+    print(np.where(nv[:,1] == maxi[1]))
+    print(np.where(nv[:,2] == maxi[2]))
+    
     print(x_max_value, x_max_if, x_max_iv)
     print(y_max_value, y_max_if, y_max_iv)
     print(z_max_value, z_max_if, z_max_iv)
-    return [[0, 0, 0.0065], [0.1706, 0, 0.0065], [0.1706, 0.2506, 0.0065], [0, 0.2506, 0.0065]]
+    """
+    return [[0, 0, 0.0065], [0.1706, 0, 0.0065], [0.1706, 0.24, 0.0065], [0, 0.24, 0.0065]]
     
 path = "/home/blaz/catkin_ws/src/obj_calib/meshes/ipad7.stl"
 get_points(mesh_path = path)
