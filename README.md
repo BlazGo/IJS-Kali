@@ -31,6 +31,11 @@ in terminal run the Panda tutorial (visualization in RVIZ) with:
 then launch the python script:
 `GUI.py`
 
+If you are running on a real robot topic names might change. Additionally you can run a 
+script that publishes additional tf of the tool which you can uptade according to the tool.
+`tf_EE.py`
+
+
 Multiple scripts with dedicated tasks:
 - GUI.py written user interface, and connecting all the code together
 - marker_diplay.py used for displaying the guide markers (e.g. spheres) as well as the captured points
