@@ -50,6 +50,10 @@ def SVD(ref_points, points_to_allign):
 
     # SVD
     H = np.dot(ref_norm.T, allign_norm)
+    # If we want full matrices (not reduced version of SVD) so 
+    # we use all the data we have to define svd(H, full_matrices=Trues)
+    # By default it is already True (usefull with large data and if 
+    # we already get a good approximation with first few components)
     U, S, Vt = np.linalg.svd(H)
     R = np.dot(Vt.T, U.T)
 
